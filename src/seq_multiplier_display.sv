@@ -15,7 +15,7 @@ import double_dabble_bin2bcd_pkg::*;
 )(
     input  logic             clk,
     input  logic             rst_n,
-    input  logic             en,
+    input  logic             en_n,
     input  logic             start_n,
     input  logic [WIDTH-1:0] multiplier,
     input  logic [WIDTH-1:0] multiplicand,
@@ -28,6 +28,7 @@ localparam int unsigned PRODUCT_WIDTH = 2*WIDTH;
 localparam int unsigned NUM_DIGITS = get_num_digits(2**PRODUCT_WIDTH);
 
 logic start;
+logic en;
 logic [PRODUCT_WIDTH-1:0] product;
 logic [PRODUCT_WIDTH-1:0] product_abs;
 logic start_bin2bcd;
@@ -35,6 +36,7 @@ logic [3:0] digits_result [NUM_DIGITS];
 logic negative_product;
 
 assign start = ~start_n;
+assign en = ~en_n;
 
 radix4_booth_multiplier#(
     .WIDTH(WIDTH),
