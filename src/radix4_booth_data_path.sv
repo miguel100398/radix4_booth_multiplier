@@ -21,7 +21,7 @@ module radix4_booth_data_path#(
 );
 
 localparam int unsigned NUM_SHIFTS_TMP        = (WIDTH)/2;
-localparam bit          ODD_WIDTH             = (WIDTH%2);
+localparam bit          ODD_WIDTH             = (WIDTH%2) ? 1'b1 : 1'b0;
 localparam int unsigned NUM_SHIFTS            = (ODD_WIDTH) ? NUM_SHIFTS_TMP + 1 : NUM_SHIFTS_TMP; //$ceil(WIDTH/2)
 localparam int unsigned MULTIPLIER_WIDTH      = (2*NUM_SHIFTS)+ODD_WIDTH;
 localparam int unsigned EXTRA_MULTIPLER_BITS  = MULTIPLIER_WIDTH-WIDTH;
