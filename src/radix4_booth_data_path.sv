@@ -20,19 +20,20 @@ module radix4_booth_data_path#(
     output logic [(2*WIDTH)-1:0]        result
 );
 
-localparam int unsigned RADIX_WIDTH           = 3;
-localparam int unsigned NUM_SHIFTS            = WIDTH/(RADIX_WIDTH-1);
-localparam int unsigned MULTIPLIER_WIDTH      = (2*NUM_SHIFTS)+1;
+localparam int unsigned NUM_SHIFTS_TMP        = (WIDTH)/2;
+localparam bit          CEIL_NUM_SHIFTS       = (WIDTH%2);
+localparam int unsigned NUM_SHIFTS            = (CEIL_NUM_SHIFTS) ? NUM_SHIFTS_TMP + 1 : NUM_SHIFTS_TMP; //$ceil(WIDTH/2)
+localparam int unsigned MULTIPLIER_WIDTH      = (2*NUM_SHIFTS)+CEIL_NUM_SHIFTS;
 localparam int unsigned EXTRA_MULTIPLER_BITS  = MULTIPLIER_WIDTH-WIDTH;
 localparam int unsigned CNTR_WIDTH            = $clog2(NUM_SHIFTS);
-localparam int unsigned PARTIAL_PRODUCT_WIDTH = MULTIPLIER_WIDTH+WIDTH+1; 
+localparam int unsigned PARTIAL_PRODUCT_WIDTH = MULTIPLIER_WIDTH+WIDTH+2; 
 
 //Multiplier
 logic signed [MULTIPLIER_WIDTH-1:0] multiplier_ext;
 logic [2:0] multiplier_bits;
 //Multiplicand
 logic signed [WIDTH-1:0] multiplicand_reg;
-logic signed [WIDTH:0] encoded_multiplicand;
+logic signed [WIDTH+1:0] encoded_multiplicand;
 logic signed [PARTIAL_PRODUCT_WIDTH-1:0] encoded_multiplicand_ext;
 //Counter
 logic [CNTR_WIDTH-1:0] cntr;
@@ -44,7 +45,13 @@ logic signed [PARTIAL_PRODUCT_WIDTH-1:0] partial_product_add;
 logic signed [PARTIAL_PRODUCT_WIDTH-1:0] partial_product_add_shift_r;
 
 //Result 
-assign result = partial_product_shift_r[2*WIDTH:1];
+always_ff @(posedge clk or negedge rst_n) begin
+    if (~rst_n) begin
+        result <= {(2*WIDTH)-1{1'b0}};
+    end else if (done) begin
+        result <= partial_product_add_shift_r[2*WIDTH:1];
+    end   
+end
 
 //Register multiplicand
 always_ff @(posedge clk or negedge rst_n) begin
@@ -88,7 +95,7 @@ assign partial_product_add_shift_r = partial_product_add >>> 1;
 
 //Adder
 assign encoded_multiplicand_ext = {encoded_multiplicand,{MULTIPLIER_WIDTH{1'b0}}};
-assign partial_product_add      = encoded_multiplicand_ext + partial_product_add_shift_r; 
+assign partial_product_add      = encoded_multiplicand_ext + partial_product_shift_r; 
 
 //Counter to finish algorithm
 assign cntr_done = (cntr == NUM_SHIFTS-1);

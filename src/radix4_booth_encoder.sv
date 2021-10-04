@@ -11,22 +11,22 @@ module radix4_booth_encoder#(
 )(
     input  logic unsigned [2:0]       multiplier_bits,         //Bits to be used to encode multiplicand
     input  logic signed   [WIDTH-1:0] multiplicand,
-    output logic signed   [WIDTH:0]   encoded_multiplicand
+    output logic signed   [WIDTH+1:0] encoded_multiplicand
 );
 
 //multiplicand*0
-logic [WIDTH:0] multiplicand_x_0;
+logic signed [WIDTH+1:0] multiplicand_x_0;
 //Sign extend multiplicand
-logic [WIDTH:0] multiplicand_ext;
+logic signed [WIDTH+1:0] multiplicand_ext;
 //multiplicand*2
-logic [WIDTH:0] multiplicand_x_2;
+logic signed [WIDTH+1:0] multiplicand_x_2;
 //Temporary encoded multiplicand to use only 1 multiplciand*-1
-logic [WIDTH:0] tmp_encoded_multiplicand;
+logic signed [WIDTH+1:0] tmp_encoded_multiplicand;
 //Encoded multiplicand*-1
-logic [WIDTH:0] tmp_encoded_multiplicand_neg;
+logic signed [WIDTH+1:0] tmp_encoded_multiplicand_neg;
 
-assign multiplicand_x_0 = {(WIDTH+1){1'b0}};
-assign multiplicand_ext = {multiplicand[WIDTH-1], multiplicand};
+assign multiplicand_x_0 = {(WIDTH+2){1'b0}};
+assign multiplicand_ext = {{2{multiplicand[WIDTH-1]}}, multiplicand};
 assign multiplicand_x_2 = multiplicand <<< 1;
 
 //Encode multiplicand

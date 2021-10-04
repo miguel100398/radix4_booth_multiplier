@@ -1,7 +1,6 @@
-module radixn_booth_multiplier_tb;
+module radix4_booth_multiplier_tb;
 
-    parameter int unsigned RADIX       = 4;
-    parameter int unsigned WIDTH       = 8;
+    parameter int unsigned WIDTH       = 5;
 
     logic                clk;
     logic                en;
@@ -17,9 +16,9 @@ module radixn_booth_multiplier_tb;
     int fail_vectors = 0;
     int run_vectors = 0;
 
-    radixn_booth_multiplier#(
-        .RADIX(RADIX),
-        .WIDTH(WIDTH)
+    radix4_booth_multiplier#(
+        .WIDTH(WIDTH),
+        .CHECK_PARAM(1)
     ) dut (
         .clk(clk),
         .en(en),
@@ -141,4 +140,4 @@ module radixn_booth_multiplier_tb;
         run_vectors++;
     endfunction: fail
 
-endmodule: radixn_booth_multiplier_tb
+endmodule: radix4_booth_multiplier_tb

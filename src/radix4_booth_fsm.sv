@@ -44,7 +44,7 @@ always_comb begin
             next_state = MUL_S;
         end
         MUL_S: begin
-            next_state = (done) ? DONE_S : MUL_S;
+            next_state = (done_cntr) ? DONE_S : MUL_S;
         end
         DONE_S: begin
             next_state = (start) ? START_S : IDLE_S;
