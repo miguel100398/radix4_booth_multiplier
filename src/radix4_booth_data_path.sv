@@ -21,9 +21,9 @@ module radix4_booth_data_path#(
 );
 
 localparam int unsigned NUM_SHIFTS_TMP        = (WIDTH)/2;
-localparam bit          CEIL_NUM_SHIFTS       = (WIDTH%2);
-localparam int unsigned NUM_SHIFTS            = (CEIL_NUM_SHIFTS) ? NUM_SHIFTS_TMP + 1 : NUM_SHIFTS_TMP; //$ceil(WIDTH/2)
-localparam int unsigned MULTIPLIER_WIDTH      = (2*NUM_SHIFTS)+CEIL_NUM_SHIFTS;
+localparam bit          ODD_WIDTH             = (WIDTH%2);
+localparam int unsigned NUM_SHIFTS            = (ODD_WIDTH) ? NUM_SHIFTS_TMP + 1 : NUM_SHIFTS_TMP; //$ceil(WIDTH/2)
+localparam int unsigned MULTIPLIER_WIDTH      = (2*NUM_SHIFTS)+ODD_WIDTH;
 localparam int unsigned EXTRA_MULTIPLER_BITS  = MULTIPLIER_WIDTH-WIDTH;
 localparam int unsigned CNTR_WIDTH            = $clog2(NUM_SHIFTS);
 localparam int unsigned PARTIAL_PRODUCT_WIDTH = MULTIPLIER_WIDTH+WIDTH+2; 
@@ -43,15 +43,24 @@ logic signed [PARTIAL_PRODUCT_WIDTH-1:0] partial_product;
 logic signed [PARTIAL_PRODUCT_WIDTH-1:0] partial_product_shift_r;
 logic signed [PARTIAL_PRODUCT_WIDTH-1:0] partial_product_add;
 logic signed [PARTIAL_PRODUCT_WIDTH-1:0] partial_product_add_shift_r;
+logic signed [(2*WIDTH)-1:0] tmp_result;
 
 //Result 
 always_ff @(posedge clk or negedge rst_n) begin
     if (~rst_n) begin
         result <= {(2*WIDTH)-1{1'b0}};
     end else if (done) begin
-        result <= partial_product_add_shift_r[2*WIDTH:1];
+        result <= tmp_result;
     end   
 end
+
+generate
+    if (ODD_WIDTH) begin : gen_result_odd_width
+        assign tmp_result = partial_product_add_shift_r[2*WIDTH+1:2];
+    end else begin : gen_result_even_width
+        assign tmp_result = partial_product_add_shift_r[2*WIDTH:1];
+    end
+endgenerate
 
 //Register multiplicand
 always_ff @(posedge clk or negedge rst_n) begin
