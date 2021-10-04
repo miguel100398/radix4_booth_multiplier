@@ -7,7 +7,7 @@
 
 module radix4_booth_data_path#(
     parameter int unsigned WIDTH       = 8,
-    parameter bit          CHECK_PARAM = 1,
+    parameter bit          CHECK_PARAM = 1
 )(
     input  logic                        clk,
     input  logic                        rst_n,
@@ -92,12 +92,13 @@ assign partial_product_add      = encoded_multiplicand_ext + partial_product_add
 
 //Counter to finish algorithm
 assign cntr_done = (cntr == NUM_SHIFTS-1);
+assign done      = cntr_done;
 
 always_ff @(posedge clk or negedge rst_cntr_n) begin
     if (~rst_cntr_n) begin
-        cntr <= {CNTR_WIDHT{1'b0}};
+        cntr <= {CNTR_WIDTH{1'b0}};
     end else if (en) begin
-        cntr <= cntr + 1;
+        cntr <= cntr + 1'b1;
     end
 end
 

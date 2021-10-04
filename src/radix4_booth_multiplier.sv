@@ -22,7 +22,7 @@ module radix4_booth_multiplier#(
 logic rst_cntr_n;
 logic start_booth;
 logic en_booth;
-logic done;
+logic done_cntr;
 
 //data path
 radix4_booth_data_path#(
@@ -36,19 +36,20 @@ radix4_booth_data_path#(
     .en(en_booth),
     .multiplier(multiplier),
     .multiplicand(multiplicand),
-    .done(done),
+    .done(done_cntr),
     .result(product)
 );
 
-radix4_booth_fsm(
+radix4_booth_fsm fsm(
     .clk(clk),
     .en(en),
     .start(start),
     .rst_n(rst_n),
-    .done(done),
+    .done_cntr(done_cntr),
     .start_booth(start_booth),
     .en_booth(en_booth),
-    .rst_cntr_n(rst_cntr_n)
+    .rst_cntr_n(rst_cntr_n),
+    .done(ready)
 );
 
 generate

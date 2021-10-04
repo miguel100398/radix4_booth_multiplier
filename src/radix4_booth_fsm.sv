@@ -8,10 +8,11 @@ module radix4_booth_fsm(
     input  logic en,
     input  logic start,
     input  logic rst_n,
-    input  logic done,
+    input  logic done_cntr,
     output logic start_booth,
     output logic en_booth,
-    output logic rst_cntr_n
+    output logic rst_cntr_n,
+    output logic done
 );
 
 typedef enum logic [1:0] {

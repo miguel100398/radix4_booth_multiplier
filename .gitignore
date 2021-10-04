@@ -50,3 +50,12 @@ modules.order
 Module.symvers
 Mkfile.old
 dkms.conf
+
+#quartus files
+/db/
+/output_files/
+/incremental_db/
+*.bak
+#quartus project
+*.qpf
+*.qsf
