@@ -24,11 +24,12 @@ import double_dabble_bin2bcd_pkg::*;
 );
 
 genvar i;
-localparam int unsigned NUM_DIGITS = get_num_digits(2**WIDTH);
+localparam int unsigned PRODUCT_WIDTH = 2*WIDTH;
+localparam int unsigned NUM_DIGITS = get_num_digits(2**PRODUCT_WIDTH);
 
 logic start;
-logic [(2*WIDTH)-1:0] product;
-logic [(2*WIDTH)-1:0] product_abs;
+logic [PRODUCT_WIDTH-1:0] product;
+logic [PRODUCT_WIDTH-1:0] product_abs;
 logic start_bin2bcd;
 logic [3:0] digits_result [NUM_DIGITS];
 logic negative_product;
@@ -57,7 +58,7 @@ pulse_generator pulse_start_bin2bcd(
 
 
 double_dabble_bin2bcd#(
-    .WIDTH(2*WIDTH),
+    .WIDTH(PRODUCT_WIDTH),
     .CHECK_PARAM(CHECK_PARAM)
 ) bin2bcd(
     .clk(clk),
@@ -91,7 +92,7 @@ generate
         assign displays[NUM_DIGITS] = {~negative_product, {6{1'b1}}};
     end
     //Turn off extra displays
-    for (i=NUM_DIGITS; i<NUM_DISPLAYS; i++) begin : gen_extra_displays
+    for (i=NUM_DIGITS+1; i<NUM_DISPLAYS; i++) begin : gen_extra_displays
         assign displays[i] = 7'b1111111;
     end
 endgenerate
