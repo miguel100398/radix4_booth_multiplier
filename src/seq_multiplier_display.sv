@@ -9,7 +9,7 @@
 module seq_multiplier_display
 import double_dabble_bin2bcd_pkg::*;
 #(
-    parameter int unsigned WIDTH        = 5,
+    parameter int unsigned WIDTH        = 8,
     parameter bit          CHECK_PARAM  = 1,
     parameter int unsigned NUM_DISPLAYS = 6
 )(
