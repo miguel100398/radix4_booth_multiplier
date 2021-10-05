@@ -59,6 +59,10 @@ dkms.conf
 /incremental_db/
 *.bak
 *.txt
+*.qar 
+*.qarlog
+*.qws
+*.zip
 #Modelsim files
 /simulation/
 *.rpt
